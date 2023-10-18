@@ -4,9 +4,9 @@
 	let time = 0;
 	let lives = 3;
 	let normnum = 1; //how many words in box
-	let normlength = 3; //length of words
+	let normlength = 4; //length of words
 	let bossnum = 2; //special spaws
-	let bosslength = 4; //special spawns
+	let bosslength = 5; //special spawns
 	let difficulty = 3000; //ms for word gen
 	let boss = 5000; //how long a boss takes to spawn
 	//Function to fetch random words from an API
