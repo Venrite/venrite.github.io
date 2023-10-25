@@ -33,6 +33,9 @@
 	lifeloss.volume = 0.1;
 	const dead = document.getElementById('dead');
 	dead.volume = 0.2;
+	const beats = document.getElementById('beats');
+	beats.volume = 0.1;
+	const startButton = document.getElementById("startButton");
 	
 	//const gamedata={//this holds all our gamedata, need to properly set this up with gamedata.spot instead of spot etc etc
 	let spot=0;
@@ -173,6 +176,7 @@
 		
 		if (lives === 3) {
 			createHearts();
+
 		}
 		startTime = new Date().getTime(); //starts timer
 		updateTimer(); //literally just turns our clock on
@@ -206,6 +210,15 @@
 		setInterval(() => {
 			updateDifficulty();
 		},10000);//add a character every 10 seconds
+		setInterval(() => {
+			beats.play();
+		},108000);//replays music
 
 	}
-	gameLoop(); //this is here to start the game, can be moved to later as a start button
+	startButton.addEventListener("click", () => {
+   startButton.style.display = "none";
+
+    gameLoop();
+    beats.play();
+});
+

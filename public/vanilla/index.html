@@ -1,0 +1,21 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <!-- scales the display  -->
+    <title>Some Kinda Word Game</title> <!--  tab's name -->
+    <link rel="stylesheet" href="script.css"> <!--  houses front end info -->
+</head>
+<body>
+<audio id="correctSound" src="./assets/correct.mp3"></audio>
+<audio id="lifeloss" src="assets/lifeloss.mp3"></audio>
+<audio id="dead" src="assets/dead.mp3"></audio>
+	<div class="wallpaper"></div>
+	<div id="game-container">
+	<div id="lives"></div>
+        <div id="player"></div>
+	<div id="timer" class="info">Time: <span id="time">0.00</span>s</div>
+	<div id="score" class="info">Score: <span id="scoreValue">0</span></div>
+    </div>
+    <input type="text" id="textbox" placeholder="Type to shoot"autocomplete="off">
+  <script src="script.js"></script>
+</body>
+</html>
