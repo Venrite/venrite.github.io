@@ -26,12 +26,15 @@
 	
 	const gameContainer = document.getElementById("game-container"); //gray area to play in being grabbed
 	const player = document.getElementById("player"); //player box rn placeholder incase we want it or need it for like, firing bullets to wordboxes
+	//all our sound effects below
 	const correctSound = document.getElementById('correctSound');
 	correctSound.volume = 0.1;
 	const lifeloss = document.getElementById('lifeloss');
 	lifeloss.volume = 0.1;
 	const dead = document.getElementById('dead');
 	dead.volume = 0.2;
+	
+	//const gamedata={//this holds all our gamedata, need to properly set this up with gamedata.spot instead of spot etc etc
 	let spot=0;
 	let elapsedTime = 0;
 	let score = 0;
@@ -44,6 +47,7 @@
 	let difficulty = 2500; //ms for word gen
 	let boss = 10000; //how long a boss takes to spawn
 	let placeholder=0;
+	//};
 	//Function to fetch random words from an API
 	async function fetchWords(num, length) { //length can be our difficulty, can add multiple words to it even
 		try {
@@ -58,11 +62,15 @@
 			return [];
 		}
 	}
-	function updateDifficulty() {//make length longer for difficulty
+	
+	//make length longer for difficulty
+	function updateDifficulty() {
 		if (normlength<12)
 			normlength+=1;
 	}
-	function createHearts() { //yash's make hearts
+	
+	//yash's make hearts
+	function createHearts() { 
 		const heartsContainer = document.getElementById('lives');
 		heartsContainer.innerHTML = ''; // Clear existing hearts
 		for (let i = 0; i < lives; i++) {
@@ -71,20 +79,21 @@
 			heartsContainer.appendChild(heart);
 		}
 	}
+	
 	//function to create and animate a word
 	async function createWord(num, length, id) { //asynce to use await, add modifier here to make it so if true, match ID and its a powerup when typed.
 		const wordBox = document.createElement("div"); //make DOM area
 		wordBox.classList.add("word-box"); //give it a wordbox
 		spot=Math.random() * 25 + 25;//get random position 
 		wordBox.style.left = `${spot}vw`; //give it a position based on viewport width, staying mostly central, scales with the screen
-		placeholder=spot;//check if last spot is to similar to current spot
-		if (Math.abs(spot-placeholder)<=25){
+		placeholder=spot;
+		if (Math.abs(spot-placeholder)<=25){//check if last spot is to similar to current spot
 		wordBox.style.left = `${Math.random() * 25 + 25}vw`; //try again, chances are it'll be fine, else skill issue
 		}
 		const randomWord = await fetchWords(num, length); //get word based on 6 length rn
 		wordBox.textContent = randomWord; //prolly put await fetch here
-		if (id!=0){ 
-			wordbox.textcontent=id.toString();//testing spot for "Power ups"
+		if (id!=0){ //testing spot for "Power ups"
+			wordbox.textcontent=id.toString();
 			}
 		gameContainer.appendChild(wordBox); //add a child node to the game container.
 		//adjust animation duration based on word length
@@ -101,7 +110,7 @@
 			}
 		);	
 		animation.onfinish = () => { //once the animation is done
-			if (!wordBox.classList.contains("killed")) { //if it isnt killed
+			if (!wordBox.classList.contains("killed")) { //if it isnt killed (add ID check later for powerup's to not lose health)
 				lives--;
 				//update the heart graphic
 				const heartsContainer = document.getElementById('lives');
@@ -116,47 +125,49 @@
 			wordBox.remove(); //this makes it so you cant type the word after the life is lost and removes a bug. could prolly use a lock =false /true
 		};
 	}
+	
 	//function to end the game
 	function endGame() {
-		setTimeout(() => {
+		setTimeout(() => {//let endgame sound effect play
 		alert(`Game Over! Score: ${score}`);
 		location.reload();
 		}, 500);
 	}
-
+	
+	//makes score number change and plays sound
 	function updateScore() {
 		const scoreElement = document.getElementById("scoreValue");
 		scoreElement.textContent = score;
 		correctSound.play();
 	}
-
-	function updateTimer() { //it turns our clock on
+	
+	//it turns our clock on
+	function updateTimer() { 
 		const currentTime = new Date().getTime();
 		const elapsedTime = (currentTime - startTime) / 1000;
 		document.getElementById("time").textContent = elapsedTime.toFixed(2);
 		requestAnimationFrame(updateTimer);
 	}
+	
 	//Event listener for typing in the text box, should add a check for if powerup, no life lost on miss
 	textbox.addEventListener("input", () => {
-		const typedText = textbox.value.trim()
-			.toLowerCase(); //convert whats typed to lwoercase
+		const typedText = textbox.value.trim().toLowerCase(); //convert whats typed to lwoercase
 		const wordBoxes = document.querySelectorAll(".word-box"); //grab every wordbox in the game container
 		wordBoxes.forEach((wordBox) => { //a beautiful for loop going through our wordboxes
-			const wordText = wordBox.textContent.trim()
-				.toLowerCase(); //take the target text and make it lowercase
+			const wordText = wordBox.textContent.trim().toLowerCase(); //take the target text and make it lowercase
 			if (typedText === wordText) {
 				wordBox.classList.add("killed"); //add a killed modifer to the object
-				wordBox.style.backgroundColor = "#0f0"; //change color to green when killed
 				wordBox.style.animation = "shake 0.5s"; //apply the shake animation
-				setTimeout(() => {
-					wordBox.remove(); //remove the word box after the animation
-				}, 500); //wait for the animation to finish
+				setTimeout(() => {//remove the word box after the shake animation finishes (500ms)
+					wordBox.remove(); 
+				}, 500); 
 				score++;
 				textbox.value = ""; //clear the text box
 				updateScore();
 			}
 		});
 	});
+	
 	//Game loop to create words periodically based on our current global variables 
 	async function gameLoop() {
 		
@@ -165,28 +176,28 @@
 		}
 		startTime = new Date().getTime(); //starts timer
 		updateTimer(); //literally just turns our clock on
-		if (window.innerWidth < 600) {
-		setInterval(() => {
+		if (window.innerWidth < 600) {//if phone sized
+		setInterval(() => {//spawn words
 			x=Math.floor(Math.random() * 4) + 3;
-			setTimeout(() =>{
+			setTimeout(() =>{//spawn radom length word on longer delay
 			createWord(normnum, x,0);
 			},500);
-			createWord(normnum, normlength,0);
+			createWord(normnum, normlength,0);//spawn normal word
 		}, difficulty+500); //adjust the interval for word creation
 		}
-		else{
-		setInterval(() => {
+		else{//if not a phone
+		setInterval(() => {//spawn words
 			x=Math.floor(Math.random() * 4) + 3;
-			setTimeout(() =>{
+			setTimeout(() =>{//spawn random length word delayed .5 seconds
 			createWord(normnum, x,0);
 			},500);
-			createWord(normnum, normlength,0);
-		}, difficulty); //adjust the interval for word creation
+			createWord(normnum, normlength,0);//spawn normal word with normal length
+		}, difficulty); 
 		
-		setInterval(() => {
+		setInterval(() => {//spawn double words AKA BOSS for now
 			createWord(bossnum, bosslength,0);
-		}, boss); //adjust the interval for word creation
-		setInterval(() => {
+		}, boss); 
+		setInterval(() => {//power up tester
 			Randid=Math.floor(Math.random() * (5 - 1 + 1)) + 1
 			createWord(normnum, normlength,3);
 		}, 1000);
