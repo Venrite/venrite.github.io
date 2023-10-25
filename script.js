@@ -26,6 +26,12 @@
 	
 	const gameContainer = document.getElementById("game-container"); //gray area to play in being grabbed
 	const player = document.getElementById("player"); //player box rn placeholder incase we want it or need it for like, firing bullets to wordboxes
+	const correctSound = document.getElementById('correctSound');
+	correctSound.volume = 0.1;
+	const lifeloss = document.getElementById('lifeloss');
+	lifeloss.volume = 0.1;
+	const dead = document.getElementById('dead');
+	dead.volume = 0.2;
 	let score = 0;
 	let time = 0;
 	let lives = 3;
@@ -89,8 +95,10 @@
 				//update the heart graphic
 				const heartsContainer = document.getElementById('lives');
 				const hearts = document.querySelectorAll('.heart');
+				lifeloss.play();
 				hearts[lives].remove();
 				if (lives <= 0) { //safer to say lessthan incase any weird bug occurs
+					dead.play();
 					endGame();
 				}
 			}
@@ -99,13 +107,16 @@
 	}
 	//function to end the game
 	function endGame() {
+		setTimeout(() => {
 		alert(`Game Over! Score: ${score}`);
 		location.reload();
+		}, 500);
 	}
 
 	function updateScore() {
 		const scoreElement = document.getElementById("scoreValue");
 		scoreElement.textContent = score;
+		correctSound.play();
 	}
 
 	function updateTimer() { //it turns our clock on
@@ -125,8 +136,7 @@
 			const wordText = wordBox.textContent.trim()
 				.toLowerCase(); //take the target text and make it lowercase
 			if (typedText === wordText) {
-				startTime = new Date()
-					.getTime(); //restart our timer for now
+				startTime = new Date().getTime(); //restart our timer for now
 				wordBox.classList.add("killed"); //add a killed modifer to the object
 				wordBox.style.backgroundColor = "#0f0"; //change color to green when killed
 				wordBox.style.animation = "shake 0.5s"; //apply the shake animation
@@ -148,8 +158,8 @@
 		updateTimer(); //literally just turns our clock on
 		if (window.innerWidth < 600) {
 			setInterval(() => {
-			createWord(normnum, 5,0);
-		}, 1200);
+			createWord(normnum, normlength,0);
+		}, difficulty);
 		}
 		else{
 		setInterval(() => {
