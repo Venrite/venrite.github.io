@@ -87,12 +87,15 @@
 	async function createWord(num, length, id) { //asynce to use await, add modifier here to make it so if true, match ID and its a powerup when typed.
 		const wordBox = document.createElement("div"); //make DOM area
 		wordBox.classList.add("word-box"); //give it a wordbox
-		spot=Math.random() * 25 + 25;//get random position 
-		wordBox.style.left = `${spot}vw`; //give it a position based on viewport width, staying mostly central, scales with the screen
-		placeholder=spot;
-		if (Math.abs(spot-placeholder)<=25){//check if last spot is to similar to current spot
-		wordBox.style.left = `${Math.random() * 25 + 25}vw`; //try again, chances are it'll be fine, else skill issue
-		}
+		const screenWidth = window.innerWidth;
+		const center = screenWidth / 2;
+		const range = 400;
+		const spot = center - range + Math.random() * (range);
+		wordBox.style.left = `${spot}px`; //give it a position based on viewport width, staying mostly central, scales with the screen
+		//placeholder=spot;
+		//if (Math.abs(spot-placeholder)<=25){//check if last spot is to similar to current spot
+		//wordBox.style.left = `${Math.random() * 25 + 25}vw`; //try again, chances are it'll be fine, else skill issue
+		//}
 		const randomWord = await fetchWords(num, length); //get word based on 6 length rn
 		wordBox.textContent = randomWord; //prolly put await fetch here
 		if (id!=0){ //testing spot for "Power ups"
@@ -197,10 +200,11 @@
 			},500);
 			createWord(normnum, normlength,0);//spawn normal word with normal length
 		}, difficulty); 
-		
+		/*
 		setInterval(() => {//spawn double words AKA BOSS for now
 			createWord(bossnum, bosslength,0);
 		}, boss); 
+		*/
 		setInterval(() => {//power up tester
 			Randid=Math.floor(Math.random() * (5 - 1 + 1)) + 1
 			createWord(normnum, normlength,3);
