@@ -162,9 +162,9 @@
 			x=Math.floor(Math.random() * 4) + 3;
 			setTimeout(() =>{
 			createWord(normnum, x,0);
-			},500);
+			},750);
 			createWord(normnum, normlength,0);
-		}, difficulty); //adjust the interval for word creation
+		}, difficulty+500); //adjust the interval for word creation
 		}
 		else{
 		
