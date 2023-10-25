@@ -32,6 +32,7 @@
 	lifeloss.volume = 0.1;
 	const dead = document.getElementById('dead');
 	dead.volume = 0.2;
+	let elapsedTime = 0;
 	let score = 0;
 	let time = 0;
 	let lives = 3;
@@ -39,7 +40,7 @@
 	let normlength = 3; //length of words
 	let bossnum = 2; //special spaws
 	let bosslength = 4; //special spawns
-	let difficulty = 3000; //ms for word gen
+	let difficulty = 2500; //ms for word gen
 	let boss = 5000; //how long a boss takes to spawn
 	//Function to fetch random words from an API
 	async function fetchWords(num, length) { //length can be our difficulty, can add multiple words to it even
@@ -55,7 +56,10 @@
 			return [];
 		}
 	}
-
+	function updateDifficulty() {
+		if (normlength<12)
+			normlength+=1;
+	}
 	function createHearts() { //yash's make hearts
 		const heartsContainer = document.getElementById('lives');
 		heartsContainer.innerHTML = ''; // Clear existing hearts
@@ -120,11 +124,9 @@
 	}
 
 	function updateTimer() { //it turns our clock on
-		const currentTime = new Date()
-			.getTime();
+		const currentTime = new Date().getTime();
 		const elapsedTime = (currentTime - startTime) / 1000;
-		document.getElementById("time")
-			.textContent = elapsedTime.toFixed(2);
+		document.getElementById("time").textContent = elapsedTime.toFixed(2);
 		requestAnimationFrame(updateTimer);
 	}
 	//Event listener for typing in the text box, should add a check for if powerup, no life lost on miss
@@ -136,7 +138,6 @@
 			const wordText = wordBox.textContent.trim()
 				.toLowerCase(); //take the target text and make it lowercase
 			if (typedText === wordText) {
-				startTime = new Date().getTime(); //restart our timer for now
 				wordBox.classList.add("killed"); //add a killed modifer to the object
 				wordBox.style.backgroundColor = "#0f0"; //change color to green when killed
 				wordBox.style.animation = "shake 0.5s"; //apply the shake animation
@@ -158,13 +159,19 @@
 		updateTimer(); //literally just turns our clock on
 		if (window.innerWidth < 600) {
 			setInterval(() => {
-			createWord(normnum, 5,0);
-		}, 1500);
+			createWord(normnum, normlength,0);
+		}, difficulty);
 		}
 		else{
+		
 		setInterval(() => {
+			x=Math.floor(Math.random() * 4) + 3;
+			setTimeout(() =>{
+			createWord(normnum, x,0);
+			},500);
 			createWord(normnum, normlength,0);
 		}, difficulty); //adjust the interval for word creation
+		/*
 		setInterval(() => {
 			createWord(bossnum, bosslength,0);
 		}, boss); //adjust the interval for word creation
@@ -172,6 +179,12 @@
 			Randid=Math.floor(Math.random() * (5 - 1 + 1)) + 1
 			createWord(normnum, normlength,3);
 		}, 1000);
+		
+*/
 		}
+		setInterval(() => {
+			updateDifficulty();
+		},10000);//add a character every 10 seconds
+
 	}
 	gameLoop(); //this is here to start the game, can be moved to later as a start button
