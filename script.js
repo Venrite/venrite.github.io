@@ -41,7 +41,7 @@
 	let bossnum = 2; //special spaws
 	let bosslength = 4; //special spawns
 	let difficulty = 2500; //ms for word gen
-	let boss = 5000; //how long a boss takes to spawn
+	let boss = 10000; //how long a boss takes to spawn
 	//Function to fetch random words from an API
 	async function fetchWords(num, length) { //length can be our difficulty, can add multiple words to it even
 		try {
@@ -158,9 +158,13 @@
 		startTime = new Date().getTime(); //starts timer
 		updateTimer(); //literally just turns our clock on
 		if (window.innerWidth < 600) {
-			setInterval(() => {
+		setInterval(() => {
+			x=Math.floor(Math.random() * 4) + 3;
+			setTimeout(() =>{
+			createWord(normnum, x,0);
+			},500);
 			createWord(normnum, normlength,0);
-		}, difficulty);
+		}, difficulty); //adjust the interval for word creation
 		}
 		else{
 		
@@ -171,7 +175,7 @@
 			},500);
 			createWord(normnum, normlength,0);
 		}, difficulty); //adjust the interval for word creation
-		/*
+		
 		setInterval(() => {
 			createWord(bossnum, bosslength,0);
 		}, boss); //adjust the interval for word creation
@@ -180,7 +184,6 @@
 			createWord(normnum, normlength,3);
 		}, 1000);
 		
-*/
 		}
 		setInterval(() => {
 			updateDifficulty();
