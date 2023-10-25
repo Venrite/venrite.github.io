@@ -148,7 +148,7 @@
 		updateTimer(); //literally just turns our clock on
 		if (window.innerWidth < 600) {
 			setInterval(() => {
-			createWord(normnum, normlength,0);
+			createWord(normnum, 3,0);
 		}, difficulty);
 		}
 		else{
