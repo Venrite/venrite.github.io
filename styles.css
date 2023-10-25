@@ -1,21 +1,39 @@
 body {
-  margin: 0;
-  overflow: hidden; /* no scrollbar */
+  background: #000;
+  overflow: hidden; /* Prevent overflow of content */
+}
+.wallpaper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+ 
+  background: url('paperdot.jpg') center center no-repeat, linear-gradient(to bottom, red, blue);
+  background-size: 100% 200%; /* Double the size to have enough space for the animation */
+ animation: shiftColors 30s linear infinite alternate;
+}
+@keyframes shiftColors {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%; /* Move the gradient colors to the top */
+  }
 }
 
 #game-container {
   margin: 0;
-  display: flex;
+  display: flex;/* so that the word boxes can be flexible */
   border: 4px solid blue;
+  background: url('galaxy.jpg');
   border-radius: 10px;
-  width: 65%;
-  height: 90vh;
+  width: 65%;/* takes 65% of the screens width */
+  height: 90%;/* take 90% of the height  */
   position: absolute;
   background-color: gray;
   transform: translateX(25%); /* centers it */
 }
 
-#player {
+#player { /* setup like this incase we need him */
   width: 50px;
   height: 50px;
   background-color: purple;
@@ -25,8 +43,7 @@ body {
   transform: translateX(-50%);
 }
 
-#timer,
-#score {
+#timer,#score { 
   font-size: 18px;
   color: red;
 }
@@ -35,28 +52,37 @@ body {
   font-weight: bold;
 }
 
-.word-box {
+.word-box {/* its a red box with bold words */
   position: absolute;
-  background-color: red;
-  /* Initial word box color */
   padding: 10px;
   border-radius: 5px;
   font-weight: bold;
+  color: white;
+  background: url('meteor.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  font-size: 24px; /* Adjust the font size to your preference */
+  line-height: 90px; /* Adjust the line height for readability */
+  align-items: center;
+  justify-content: center;
 }
 
 .killed {
-  background-color: #0f0 !important; /* Change color to green when killed, fix the typo */
+  background:url('explosion.png');
+   background-size: contain;
+  background-repeat: no-repeat;
+  align-items: center;
+  justify-content: center;
 }
 
-#textbox {
+#textbox {/* where the player is typing */
   position: absolute;
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
 }
 
-/* Add a shake animation when a word is typed */
-@keyframes shake {
+@keyframes shake {/*  as it moves from 0 to 100, at 10% intervals it'll go left and right by 5 px */
   0%, 100% {
     transform: translateX(0);
   }
@@ -68,8 +94,7 @@ body {
   }
 }
 
-/* Animation for word movement */
-@keyframes moveWord {
+@keyframes moveWord {/*  for falling words, its at the very top, and will move down */
   0% {
     top: 0%;
   }
@@ -113,17 +138,15 @@ body {
   }
 }
 
-/* Media query for screens with a maximum width of 600px (typical for smartphones) */
-@media screen and (max-width: 600px) {
+
+@media screen and (max-width: 600px) {/* checks if screen is small */
   #game-container {
-    height: 40%; /* Adjust height for smaller screens */
-    bottom: 20px; /* Adjust position */
+    height: 40%; /* shortens the game-container */
+    bottom: 20px; /* and moves it down so the keyboard can fit on screen */
   }
 
-  #player {
-    width: 10px; /* Adjust player box size for smaller screens */
+  #player {/* look at this lil guy */
+    width: 10px; 
     height: 10px;
   }
-
-  /* You can add more adjustments for smaller screens here */
 }
