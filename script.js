@@ -32,6 +32,7 @@
 	lifeloss.volume = 0.1;
 	const dead = document.getElementById('dead');
 	dead.volume = 0.2;
+	let spot=0;
 	let elapsedTime = 0;
 	let score = 0;
 	let time = 0;
@@ -42,6 +43,7 @@
 	let bosslength = 4; //special spawns
 	let difficulty = 2500; //ms for word gen
 	let boss = 10000; //how long a boss takes to spawn
+	let placeholder=0;
 	//Function to fetch random words from an API
 	async function fetchWords(num, length) { //length can be our difficulty, can add multiple words to it even
 		try {
@@ -56,7 +58,7 @@
 			return [];
 		}
 	}
-	function updateDifficulty() {
+	function updateDifficulty() {//make length longer for difficulty
 		if (normlength<12)
 			normlength+=1;
 	}
@@ -73,11 +75,16 @@
 	async function createWord(num, length, id) { //asynce to use await, add modifier here to make it so if true, match ID and its a powerup when typed.
 		const wordBox = document.createElement("div"); //make DOM area
 		wordBox.classList.add("word-box"); //give it a wordbox
-		wordBox.style.left = `${Math.random() * 25 + 25}vw`; //give it a position based on viewport width, staying mostly central
+		spot=Math.random() * 25 + 25;//get random position 
+		wordBox.style.left = `${spot}vw`; //give it a position based on viewport width, staying mostly central, scales with the screen
+		placeholder=spot;//check if last spot is to similar to current spot
+		if (Math.abs(spot-placeholder)<=25){
+		wordBox.style.left = `${Math.random() * 25 + 25}vw`; //try again, chances are it'll be fine, else skill issue
+		}
 		const randomWord = await fetchWords(num, length); //get word based on 6 length rn
 		wordBox.textContent = randomWord; //prolly put await fetch here
 		if (id!=0){ 
-			wordbox.textcontent=id;
+			wordbox.textcontent=id.toString();//testing spot for "Power ups"
 			}
 		gameContainer.appendChild(wordBox); //add a child node to the game container.
 		//adjust animation duration based on word length
@@ -152,6 +159,7 @@
 	});
 	//Game loop to create words periodically based on our current global variables 
 	async function gameLoop() {
+		
 		if (lives === 3) {
 			createHearts();
 		}
@@ -162,12 +170,11 @@
 			x=Math.floor(Math.random() * 4) + 3;
 			setTimeout(() =>{
 			createWord(normnum, x,0);
-			},750);
+			},500);
 			createWord(normnum, normlength,0);
 		}, difficulty+500); //adjust the interval for word creation
 		}
 		else{
-		
 		setInterval(() => {
 			x=Math.floor(Math.random() * 4) + 3;
 			setTimeout(() =>{
