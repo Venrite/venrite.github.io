@@ -88,9 +88,8 @@
 		const wordBox = document.createElement("div"); //make DOM area
 		wordBox.classList.add("word-box"); //give it a wordbox
 		const screenWidth = window.innerWidth;
-		const center = screenWidth / 2;
-		const range = 400;
-		const spot = center - range + Math.random() * (range);
+		const spotPercentage = 0 + Math.random() * (50);
+		const spot = (spotPercentage / 100) * screenWidth;
 		wordBox.style.left = `${spot}px`; //give it a position based on viewport width, staying mostly central, scales with the screen
 		//placeholder=spot;
 		//if (Math.abs(spot-placeholder)<=25){//check if last spot is to similar to current spot
