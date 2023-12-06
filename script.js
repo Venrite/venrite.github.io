@@ -23,9 +23,9 @@
 	the boxes for a prototype should be fine however we can either pretty the game up by making the boxes and background grids pretty/neon. or we cna add sprites and images (like squirels falling down are the wordboxes
 	and the background of the webpage can be a forest and the game-container can be a similar forest or a car being protected from wildlife or something goofy, or the game can be meteorites falling down)
 	*/
-	
+	//const playerName = prompt("Enter your Name");
 	const gameContainer = document.getElementById("game-container"); //gray area to play in being grabbed
-	const player = document.getElementById("player"); //player box rn placeholder incase we want it or need it for like, firing bullets to wordboxes
+	//const player = document.getElementById("player"); //player box rn placeholder incase we want it or need it for like, firing bullets to wordboxes
 	//all our sound effects below
 	const correctSound = document.getElementById('correctSound');
 	correctSound.volume = 0.1;
@@ -50,7 +50,29 @@
 	let difficulty = 2500; //ms for word gen
 	let boss = 10000; //how long a boss takes to spawn
 	let placeholder=0;
+	let yayYayAppear = 0; // Initialize variable to track the appearance of "yayyay" word
+	let scoreMultiplier = 1; // Initialize score multiplier
+	let longestTypedWord = ""; // Variable to store the longest typed word
+	let longestTypedWordTime = 0; // Variable to store the timestamp of the longest typed word
+	let wordsTyped = 0;
+	let startTime;
 	//};
+	function calculateWPM() {
+    const currentTime = new Date().getTime();
+    const elapsedTime = (currentTime - startTime) / 1000 / 60; // Convert milliseconds to minutes
+    const wpm = Math.round((wordsTyped / elapsedTime) * 60); // Words per minute calculation
+    return wpm;
+}
+	// Function to handle the score multiplier power-up effect
+	function activateScoreMultiplier(factor, duration) {
+		scoreMultiplier *= factor; // Multiply score by the given factor
+		document.getElementById('multiplier-indicator').style.display = 'block'; // Show visual indicator
+
+		setTimeout(() => {
+			scoreMultiplier /= factor; // Revert the score multiplier after the duration ends
+			document.getElementById('multiplier-indicator').style.display = 'none'; // Hide visual indicator
+		}, duration);
+	}
 	//Function to fetch random words from an API
 	async function fetchWords(num, length) { //length can be our difficulty, can add multiple words to it even
 		try {
@@ -82,10 +104,55 @@
 			heartsContainer.appendChild(heart);
 		}
 	}
+	async function createMultiplierWord() {
+		const wordBox = document.createElement("div");
+		wordBox.classList.add("word-box");
+		const screenWidth = window.innerWidth;
+		const spotPercentage = 0 + Math.random() * 50;
+		const spot = (spotPercentage / 100) * screenWidth;
+		wordBox.style.left = `${spot}px`;
+		wordBox.textContent = "multiplier"; // Set the text to "multiplier"
+		gameContainer.appendChild(wordBox);
 	
+		const animation = wordBox.animate(
+			 [{ top: "0%" }, { top: "100%" }],
+			 {
+				  duration: Math.floor(Math.random() * (8000 - 3000 + 1)) + 3000,
+				  easing: "linear",
+			 }
+		);
+	
+		animation.onfinish = () => {
+			 wordBox.remove();
+		};
+   }
+  async function createYayYayWord() {
+    const wordBox = document.createElement("div");
+	wordBox.style.backgroundImage='url("Heal.png")';
+    wordBox.classList.add("word-box"); // Add a class for styling
+    const screenWidth = window.innerWidth;
+    const spotPercentage = 0 + Math.random() * 50;
+    const spot = (spotPercentage / 100) * screenWidth;
+    wordBox.style.left = `${spot}px`;
+	wordBox.textContent = "heal"; // Set the text to "yayyay"
+	gameContainer.appendChild(wordBox);
+
+    const animation = wordBox.animate(
+        [{ top: "0%" }, { top: "100%" }],
+        {
+            duration: Math.floor(Math.random() * (8000 - 3000 + 1)) + 3000,
+            easing: "linear",
+        }
+    );
+
+    animation.onfinish = () => {
+        wordBox.remove();
+    };
+}
 	//function to create and animate a word
 	async function createWord(num, length, id) { //asynce to use await, add modifier here to make it so if true, match ID and its a powerup when typed.
 		const wordBox = document.createElement("div"); //make DOM area
+		
 		wordBox.classList.add("word-box"); //give it a wordbox
 		const screenWidth = window.innerWidth;
 		const spotPercentage = 0 + Math.random() * (50);
@@ -134,7 +201,7 @@
 	//function to end the game
 	function endGame() {
 		setTimeout(() => {//let endgame sound effect play
-		alert(`Game Over! Score: ${score}`);
+		alert(`Game Over! Score: ${score} and slowest typed word: ${longestTypedWord}`);
 		location.reload();
 		}, 500);
 	}
@@ -152,33 +219,73 @@
 		const elapsedTime = (currentTime - startTime) / 1000;
 		document.getElementById("time").textContent = elapsedTime.toFixed(2);
 		requestAnimationFrame(updateTimer);
+		const WPM = document.getElementById("WPMValue");
+		WPM.textContent = Math.round(wordsTyped/(elapsedTime/60));
 	}
 	
 	//Event listener for typing in the text box, should add a check for if powerup, no life lost on miss
-	textbox.addEventListener("input", () => {
-		const typedText = textbox.value.trim().toLowerCase(); //convert whats typed to lwoercase
-		const wordBoxes = document.querySelectorAll(".word-box"); //grab every wordbox in the game container
-		wordBoxes.forEach((wordBox) => { //a beautiful for loop going through our wordboxes
-			const wordText = wordBox.textContent.trim().toLowerCase(); //take the target text and make it lowercase
-			if (typedText === wordText) {
-				wordBox.classList.add("killed"); //add a killed modifer to the object
-				wordBox.style.animation = "shake 0.5s"; //apply the shake animation
-				setTimeout(() => {//remove the word box after the shake animation finishes (500ms)
-					wordBox.remove(); 
-				}, 500); 
-				score++;
-				textbox.value = ""; //clear the text box
-				updateScore();
-			}
+		textbox.addEventListener("input", () => {
+		const typedText = textbox.value.trim().toLowerCase();
+		const wordBoxes = document.querySelectorAll(".word-box");
+		let yayYayTyped = false;
+		let multiplierTyped = false;
+		let typedWordMatched = false;
+  
+		wordBoxes.forEach((wordBox) => {
+			 const wordText = wordBox.textContent.trim().toLowerCase();
+  
+			 if (typedText === "heal" && wordText === "heal") {
+				  wordBox.classList.add("killed");
+				  wordBox.style.animation = "shake 0.5s";
+				  setTimeout(() => {
+						wordBox.remove();
+				  }, 500);
+  
+				  if (yayYayAppear === 1) {
+						yayYayAppear = 0;
+						lives++;
+						createHearts();
+						yayYayTyped = true;
+				  }
+				  textbox.value = "";
+			 } else if (typedText === "multiplier" && wordText === "multiplier") {
+				  wordBox.classList.add("killed");
+				  wordBox.style.animation = "shake 0.5s";
+				  setTimeout(() => {
+						wordBox.remove();
+				  }, 500);
+  
+				  activateScoreMultiplier(2, 10000);
+				  multiplierTyped = true;
+				  typedWordMatched = true; // Flag that a word was matched
+  
+				  // Clear the textbox specifically for "multiplier"
+				  textbox.value = "";
+			 } else if (typedText === wordText) {
+				  wordBox.classList.add("killed");
+				  wordBox.style.animation = "shake 0.5s";
+				  setTimeout(() => {
+						wordBox.remove();
+				  }, 500);
+				  typedWordMatched = true;
+				  wordsTyped++;
+				  score += 1 * scoreMultiplier;
+				  updateScore();
+				  textbox.value = "";
+			 }
+			 if (typedText.length > longestTypedWord.length) {
+                longestTypedWord = typedText;
+                longestTypedWordTime = new Date().getTime();
+            }
 		});
-	});
+		
+  });
 	
 	//Game loop to create words periodically based on our current global variables 
 	async function gameLoop() {
 		
 		if (lives === 3) {
 			createHearts();
-
 		}
 		startTime = new Date().getTime(); //starts timer
 		updateTimer(); //literally just turns our clock on
@@ -199,16 +306,7 @@
 			},500);
 			createWord(normnum, normlength,0);//spawn normal word with normal length
 		}, difficulty); 
-		/*
-		setInterval(() => {//spawn double words AKA BOSS for now
-			createWord(bossnum, bosslength,0);
-		}, boss); 
-		*/
-		setInterval(() => {//power up tester
-			Randid=Math.floor(Math.random() * (5 - 1 + 1)) + 1
-			createWord(normnum, normlength,3);
-		}, 1000);
-		
+	
 		}
 		setInterval(() => {
 			updateDifficulty();
@@ -216,12 +314,22 @@
 		setInterval(() => {
 			beats.play();
 		},108000);//replays music
+		setInterval(() => {
+			updateDifficulty();
+			createYayYayWord();
+			yayYayAppear = 1;
+		},15000);
+		setInterval(() => {
+			beats.play();
+		},108000);//replays music
+		setInterval(() => {
+			createMultiplierWord();
+		}, 20000);
 
 	}
-	startButton.addEventListener("click", () => {
-   startButton.style.display = "none";
+	startButton.addEventListener("click", () => {//when they click the button begin the game.
+	startButton.style.display = "none";
 
     gameLoop();
     beats.play();
 });
-
