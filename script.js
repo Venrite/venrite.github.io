@@ -26,7 +26,10 @@
 	const lifeloss = document.getElementById('lifeloss');
 	const dead = document.getElementById('dead');
 	const beats = document.getElementById('beats');
-	
+	const nuke = document.getElementById('nuke');
+	const healed = document.getElementById('healed');
+	healed.volume = 0.1;
+	nuke.volume = 0.1;
 	correctSound.volume = 0.1;
 	beats.volume = 0.1;
 	dead.volume = 0.2;
@@ -176,6 +179,7 @@
 			 const wordText = wordBox.textContent.trim().toLowerCase();
   
 			 if (typedText === "heal" && wordText === "heal") {//yash made
+				  healed.play();
 				  wordBox.classList.add("killed");
 				  wordBox.style.animation = "shake 0.5s";
 				  setTimeout(() => {wordBox.remove();}, 500);
@@ -195,6 +199,7 @@
 				  typedWordMatched = true;
 				  textbox.value = "";
 			 } else if (typedText==="nuke"&&wordText==="nuke"){
+				nuke.play();
 				wordBoxes.forEach((wordBox) => {
 				wordBox.classList.add("killed");
 				setTimeout(() => {wordBox.remove(); }, 500);
