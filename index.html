@@ -12,12 +12,40 @@
 <audio id="dead" src="dead.mp3"></audio>
 	<div class="wallpaper"></div>
 	<div id="game-container">
+	<div id = "leaderboard">
 	<div id="lives"></div>
-       <div id="player"></div>
+    <div id="player"></div>
 	<div id="timer" class="info">Time: <span id="time">0.00</span>s</div>
 	<div id="score" class="info">Score: <span id="scoreValue">0</span></div>
+	<div id="WPM" class="info">WPM: <span id="WPMValue">0</span></div>
     </div>
+	<div id="multiplier-indicator" style="display: none;">Multiplier Active!</div>
     <input type="text" id="textbox" placeholder="Type to shoot"autocomplete="off">
+	
+	<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAhu1EoMN074-0r0VSM9WY-cqjOyZw6N4U",
+    authDomain: "cs490-board.firebaseapp.com",
+    projectId: "cs490-board",
+    storageBucket: "cs490-board.appspot.com",
+    messagingSenderId: "509870418120",
+    appId: "1:509870418120:web:ced08799396cd8d1091dfd",
+    measurementId: "G-38ZSJF6J4E"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+	
   <script src="script.js"></script>
 </body>
 </html>
