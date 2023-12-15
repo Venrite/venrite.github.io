@@ -243,13 +243,13 @@ async function gameLoop() {
 			n = Math.floor(Math.random() * 4) + 3;
             if (x === 0||x===5||x===15) {
                 updateDifficulty();
-            } else if (x === 10) {
+            } else if (x === 10||x===12) {
                 createWord(normnum, normlength,1);
                 yayYayAppear = 1;
-            } else if (x === 9) {
+            } else if (x === 9||x==7) {
                 createWord(normnum, normlength,2);
 
-            }else if(x===4){
+            }else if(x===4||x==3){
 			createWord(normnum,normlength,3);
 			}else {
                 createWord(normnum, n,0);
