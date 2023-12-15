@@ -257,7 +257,7 @@ async function gameLoop() {
             }
         }, difficulty);
     }
-    setInterval(() => { beats.play(); }, 108000); // replays music
+    setInterval(() => { beats.play(); }, 103000); // replays music
 }
 
 	startButton.addEventListener("click", () => {//when they click the button begin the game, so that music can play.
