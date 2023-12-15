@@ -253,7 +253,7 @@ async function gameLoop() {
 			createWord(normnum,normlength,3);
 			}else {
                 createWord(normnum, n,0);
-                createWord(normnum, normlength,3);
+                createWord(normnum, normlength,0);
             }
         }, difficulty);
     }
