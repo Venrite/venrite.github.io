@@ -249,10 +249,7 @@ async function gameLoop() {
             } else if (x === 9) {
                 createWord(normnum, normlength,2);
 
-            } else if(x===20){
-			createNukeWord();
-			}
-	    else if(x===4){
+            }else if(x===4){
 			createWord(normnum,normlength,3);
 			}else {
                 createWord(normnum, n,0);
