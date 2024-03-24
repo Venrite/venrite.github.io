@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub Dashboard</title>
+    <!-- Include Ace editor library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+    <h1>GitHub Dashboard</h1>
+    <div id="editor"></div>
+    <button onclick="saveFile()">Save File</button>
+
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/javascript");
+
+        // Function to save file
+    function saveFile() {
+		var content = editor.getValue();
+		var token = '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';
+		var apiUrl = 'https://api.github.com/repos/Venrite/venrite.github.io/contents/data.txt';
+	
+		var requestOptions = {
+			method: 'PUT',
+			headers: {
+				'Authorization': 'token ' + token,
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				message: 'Update file',
+				content: btoa(content), // Encode content as base64
+				sha: 'SHA_OF_EXISTING_FILE' // SHA of the existing file you're updating
+			})
+		};
+	
+		fetch(apiUrl, requestOptions)
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Failed to update file');
+				}
+				return response.json();
+			})
+			.then(data => {
+				console.log('File updated successfully');
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+	}
+    </script>
+</body>
+</html>
