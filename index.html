@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GitHub Dashboard</title>
+    <title>GitHub Dashboard2</title>
     <!-- Include Ace editor library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
 </head>
@@ -17,6 +17,7 @@
 
         // Function to save file
     function saveFile() {
+	    	console.log("you clicked me");
 		var content = editor.getValue();
 		var token = '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';
 		var apiUrl = 'https://api.github.com/repos/Venrite/venrite.github.io/contents/data.txt';
